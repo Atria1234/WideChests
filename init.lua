@@ -9,6 +9,9 @@ MergingChests.unlimited_mod_name = 'WideChestsUnlimited'
 MergingChests.override_size_settings_mod_name = 'WideChestsOverrideSizeSettings'
 MergingChests.override_inventory_settings_mod_name = 'WideChestsOverrideInventorySettings'
 
+--- Used for reviving ghost entities to get their inventory's bar
+MergingChests.merge_surface_name = MergingChests.mod_name
+
 function MergingChests.is_mod_active(mod)
 	return not not (mods or script.active_mods)[mod]
 end

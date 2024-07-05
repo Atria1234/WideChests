@@ -1,5 +1,3 @@
-local fmath = require("__flib__.math")
-
 --- @alias chest_merged_event { player_index: number, surface: LuaSurface, split_chests: LuaEntity[], merged_chest: LuaEntity }
 
 --- @param entity LuaEntity
@@ -63,27 +61,43 @@ function MergingChests.move_inventories(from_entities, to_entities)
 	end
 end
 
---- @param from_entities LuaEntity[]
---- @param to_entities LuaEntity[]
-function MergingChests.move_inventory_bar(from_entities, to_entities)
+---@param entity LuaEntity
+---@return integer | nil
+local function get_entity_bar(entity)
+	local inventory = entity.get_inventory(defines.inventory.chest)
+	if inventory and inventory.supports_bar() then
+		return inventory.get_bar() - 1
+	end
+	return nil
+end
+
+--- @param entities LuaEntity[]
+--- @param is_ghost boolean
+--- @return integer
+function MergingChests.get_total_bar(entities, is_ghost)
 	local bar_count = 0
-	for _, entity in ipairs(from_entities) do
-		local inventory = entity.get_inventory(defines.inventory.chest)
-		if inventory and inventory.supports_bar() then
-			bar_count = bar_count + inventory.get_bar() - 1
+	for _, entity in ipairs(entities) do
+		local bar = (is_ghost and entity.ghost_prototype or entity.prototype).get_inventory_size(defines.inventory.chest) or 0
+		if is_ghost then
+			local clone = entity.clone({ position = {0, 0}, surface = game.surfaces[MergingChests.merge_surface_name] })
+			if clone then
+				local _, revived_entity = clone.silent_revive({ raise_revive = false })
+				if revived_entity then
+					bar = get_entity_bar(revived_entity) or bar
+					revived_entity.destroy({ raise_destroy = false })
+				else
+					error('Can\'t revive ghost for getting its bar')
+				end
+			else
+				error('Can\'t clone ghost for getting its bar')
+			end
+		else
+			bar = get_entity_bar(entity) or bar
 		end
+		bar_count = bar_count + bar
 	end
 
-	local to_entities_count = table_size(to_entities)
-	for _, entity in ipairs(to_entities) do
-		local inventory = entity.get_inventory(defines.inventory.chest)
-		if inventory and inventory.supports_bar() then
-			local bar = math.min(fmath.round(bar_count / to_entities_count), 65535)
-			inventory.set_bar(bar + 1)
-			bar_count = bar_count - bar
-			to_entities_count = to_entities_count - 1
-		end
-	end
+	return bar_count
 end
 
 --- @param from_entities LuaEntity[]
