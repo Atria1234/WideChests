@@ -1,4 +1,10 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 5.3.0
+Date: 13.8.2024
+  Features:
+    - Merged and split chests have their "last_user" property set to player who did the merge/split.
+
+---------------------------------------------------------------------------------------------------
 Version: 5.2.1
 Date: 5.7.2024
   Bugfixes:

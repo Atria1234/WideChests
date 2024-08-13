@@ -57,6 +57,9 @@ local function on_player_alt_selected_area(event)
 					local split_chests = create_split_chest(merged_chest, split_chest_name, width, height, player, is_ghost, total_bar)
 
 					if not is_ghost then
+						for _, split_chest in ipairs(split_chests) do
+							split_chest.last_user = player
+						end
 						MergingChests.move_inventories({ merged_chest }, split_chests)
 					end
 					MergingChests.reconnect_circuits({ merged_chest }, split_chests)
