@@ -57,7 +57,8 @@ MergingChests.setting_names = {
 	sprite_decal_chance = MergingChests.prefix_with_modname('sprite-decal-chance'),
 	warehouse_threshold = MergingChests.prefix_with_modname('warehouse-threshold'),
 	circuit_connector_position = MergingChests.prefix_with_modname('circuit-connector-position'),
-	allow_delete_items = MergingChests.prefix_with_modname('allow-delete-items')
+	allow_delete_items = MergingChests.prefix_with_modname('allow-delete-items'),
+	enable_upgrading_merged_chests = MergingChests.prefix_with_modname('enable-chest-upgrade'),
 }
 
 local WHITELIST_SIZE_ANY = 'any'

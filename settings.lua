@@ -105,6 +105,13 @@ data:extend(
 		setting_type = 'runtime-per-user',
 		default_value = false,
 		order = '12'
+	},
+	{
+		name = MergingChests.setting_names.enable_upgrading_merged_chests,
+		type = 'bool-setting',
+		setting_type = 'startup',
+		default_value = true,
+		order = '13'
 	}
 })
 
