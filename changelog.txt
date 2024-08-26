@@ -1,4 +1,10 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 5.4.1
+Date: 18.8.2024
+  Bugfixes:
+    - Fixed merged entities still showing up when selecting from/to entities in upgrade planner even when upgrading merged chests is disabled.
+
+---------------------------------------------------------------------------------------------------
 Version: 5.4.0
 Date: 17.8.2024
   Features:

@@ -113,7 +113,6 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			icon = base_chest.icon,
 			icons = base_chest.icons,
 			icon_size = base_chest.icon_size,
-			fast_replaceable_group = 'merged-container',
 			open_sound = base_chest.open_sound,
 			close_sound = base_chest.close_sound,
 			max_health = base_chest.max_health * math.min(width * height, 10),
@@ -131,6 +130,9 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			circuit_connector_sprites = connector.sprites,
 			circuit_wire_max_distance = default_circuit_wire_max_distance + math.min(width, height) - 1,
 		},
+		settings.startup[MergingChests.setting_names.enable_upgrading_merged_chests].value and {
+			fast_replaceable_group = 'merged-container',
+		} or {},
 		entity_data.override_prototype_properties or {}
 	})
 end
