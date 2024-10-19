@@ -32,7 +32,7 @@ local function on_force_created(event)
     local surface = game.get_surface(MergingChests.merge_surface_name)
     if surface then
         event.force.chart(surface, {{-1, -1}, {1, 1}})
-        force.set_surface_hidden(surface, true)
+        event.force.set_surface_hidden(surface, true)
     end
 end
 
