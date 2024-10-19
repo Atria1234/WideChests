@@ -26,7 +26,7 @@ function MergingChests.can_move_inventories(from_entities, to_entity_name, to_en
 		from_item_count = from_item_count + non_blank_inventory_slots_count(from_entity)
 	end
 
-	local to_inventory_size = game.entity_prototypes[to_entity_name].get_inventory_size(defines.inventory.chest) or 0
+	local to_inventory_size = prototypes.entity[to_entity_name].get_inventory_size(defines.inventory.chest) or 0
 
 	local is_merged_chest, _, _ = MergingChests.get_merged_chest_info(to_entity_name)
 
@@ -108,63 +108,67 @@ function MergingChests.reconnect_circuits(from_entities, to_entities)
 		from_entities_set[from_entity] = from_entity
 	end
 
-	local connections = { }
-	local red = false
-	local green = false
+	local outside_connectors = { }
 	for _, from_entity in ipairs(from_entities) do
-		for _, connection in ipairs(from_entity.circuit_connection_definitions) do
-			if not from_entities_set[connection.target_entity] then
-				table.insert(connections, connection)
-
-				red = red or connection.wire == defines.wire_type.red
-				green = green or connection.wire == defines.wire_type.green
+		for _, connector in ipairs(from_entity.get_wire_connectors(false)) do
+			for _, connection in ipairs(connector.connections) do
+				if not from_entities_set[connection.target.owner] then
+					outside_connectors[connection.target.wire_connector_id] = outside_connectors[connection.target.wire_connector_id] or {}
+					outside_connectors[connection.target.wire_connector_id][connection.target.owner.unit_number] = connection.target
+				end
 			end
 		end
 	end
 
-	if #connections > 0 then
-		-- connect all "to_entities" entities together
+	if next(outside_connectors) ~= nil then
+		local red = outside_connectors[defines.wire_connector_id.circuit_red] ~= nil
+		local green = outside_connectors[defines.wire_connector_id.circuit_green] ~= nil
+
 		local grid = MergingChests.entities_to_grid(to_entities)
 		for x = grid.min_x, grid.max_x do
 			for y = grid.min_y, grid.max_y do
 				if red then
 					if x + 1 <= grid.max_x then
-						grid[x][y].connect_neighbour{wire = defines.wire_type.red, target_entity = grid[x + 1][y]}
+						grid[x][y].get_wire_connector(defines.wire_connector_id.circuit_red, true)
+							.connect_to(grid[x + 1][y].get_wire_connector(defines.wire_connector_id.circuit_red, true))
 					end
 					if y + 1 <= grid.max_y then
-						grid[x][y].connect_neighbour{wire = defines.wire_type.red, target_entity = grid[x][y + 1]}
+						grid[x][y].get_wire_connector(defines.wire_connector_id.circuit_red, true)
+							.connect_to(grid[x][y + 1].get_wire_connector(defines.wire_connector_id.circuit_red, true))
 					end
 				end
 
 				if green then
 					if x + 1 <= grid.max_x then
-						grid[x][y].connect_neighbour{wire = defines.wire_type.green, target_entity = grid[x + 1][y]}
+						grid[x][y].get_wire_connector(defines.wire_connector_id.circuit_green, true)
+							.connect_to(grid[x + 1][y].get_wire_connector(defines.wire_connector_id.circuit_green, true))
 					end
 					if y + 1 <= grid.max_y then
-						grid[x][y].connect_neighbour{wire = defines.wire_type.green, target_entity = grid[x][y + 1]}
+						grid[x][y].get_wire_connector(defines.wire_connector_id.circuit_green, true)
+							.connect_to(grid[x][y + 1].get_wire_connector(defines.wire_connector_id.circuit_green, true))
 					end
 				end
 			end
 		end
 
+		for wire_connector_id, connectors in pairs(outside_connectors) do
+			for _, connector in pairs(connectors) do
+				local closest_entity = nil
+				local min = nil
 
-		-- connect to all outside entities
-		for _, connection in ipairs(connections) do
-			local closest_entity = nil
-			local min = nil
+				for _, to_entity in ipairs(to_entities) do
+					local diffX = to_entity.position.x - connector.owner.position.x
+					local diffY = to_entity.position.y - connector.owner.position.y
 
-			for _, to_entity in ipairs(to_entities) do
-				local diffX = to_entity.position.x - connection.target_entity.position.x
-				local diffY = to_entity.position.y - connection.target_entity.position.y
-
-				if not min or (diffX * diffX + diffY * diffY < min) then
-					min = diffX * diffX + diffY * diffY
-					closest_entity = to_entity
+					if not min or (diffX * diffX + diffY * diffY < min) then
+						min = diffX * diffX + diffY * diffY
+						closest_entity = to_entity
+					end
 				end
-			end
 
-			if closest_entity then
-				closest_entity.connect_neighbour(connection)
+				if closest_entity then
+					closest_entity.get_wire_connector(wire_connector_id, true).connect_to(connector)
+				end
 			end
 		end
 	end

@@ -132,7 +132,7 @@ local function group_chests(entities, entity_name, is_ghost)
 		--- @param height integer
 		--- @return boolean
 		local function is_size_allowed(width, height)
-			return game.entity_prototypes[MergingChests.get_merged_chest_name(entity_name, width, height)] ~= nil
+			return prototypes.entity[MergingChests.get_merged_chest_name(entity_name, width, height)] ~= nil
 		end
 
 		local rectangle = find_largest_rectangle(chest_grid, is_size_allowed)
@@ -214,7 +214,7 @@ local function on_player_selected_area(event)
 						end
 					else
 						player.create_local_flying_text({
-							text = 'flying-text.'..MergingChests.prefix_with_modname('items-would-be-deleted-merge'),
+							text = { 'flying-text.'..MergingChests.prefix_with_modname('items-would-be-deleted-merge') },
 							position = chest_group_to_merge.entities[1].position
 						})
 					end

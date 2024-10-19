@@ -61,6 +61,12 @@ MergingChests.setting_names = {
 	enable_upgrading_merged_chests = MergingChests.prefix_with_modname('enable-chest-upgrade'),
 }
 
+MergingChests.chest_names = {
+	wooden = 'wooden-chest',
+	iron = 'iron-chest',
+	steel = 'steel-chest'
+}
+
 local WHITELIST_SIZE_ANY = 'any'
 
 --- @alias size_whitelist -- two dimentional array[width][height] = enabled?

@@ -45,15 +45,13 @@ local function get_circuit_connector(chest_name, width, height)
 		x = width / 2 - 0.5
 	end
 
-	return circuit_connector_definitions.create(
+	return circuit_connector_definitions.create_single(
 		universal_connector_template,
 		{
-			{
-				variation = variation,
-				main_offset = { x, y },
-				shadow_offset = { x + 0.1, y + 0.1 },
-				show_shadow = false
-			}
+			variation = variation,
+			main_offset = { x, y },
+			shadow_offset = { x + 0.1, y + 0.1 },
+			show_shadow = false
 		}
 	)
 end
@@ -103,7 +101,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 
 	local merged_chest_name = MergingChests.get_merged_chest_name(entity_data.chest_name, width, height)
 
-	table.insert(data.raw['selection-tool'][MergingChests.merge_selection_tool_name].alt_entity_filters, merged_chest_name)
+	table.insert(data.raw['selection-tool'][MergingChests.merge_selection_tool_name].alt_select.entity_filters, merged_chest_name)
 
 	return util.merge({
 		type_specific_properties,
@@ -126,8 +124,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			collision_box = { { -width / 2 + 0.15, -height / 2 + 0.15 }, { width / 2 - 0.15, height / 2 - 0.15 } },
 			selection_box = { { -width / 2, -height / 2 }, { width / 2, height / 2 } },
 			subgroup = subgroup,
-			circuit_wire_connection_point = connector.points,
-			circuit_connector_sprites = connector.sprites,
+			circuit_connector = connector,
 			circuit_wire_max_distance = default_circuit_wire_max_distance + math.min(width, height) - 1,
 		},
 		settings.startup[MergingChests.setting_names.enable_upgrading_merged_chests].value and {
@@ -143,7 +140,7 @@ end
 local function create_wide_chest_entity(entity_data, segment_data, width)
 	return create_entity(
 		entity_data,
-		{ 'chest-name.'..MergingChests.prefix_with_modname('wide-'..entity_data.chest_name), width },
+		{ 'chest-name.'..MergingChests.prefix_with_modname('wide-'..entity_data.chest_name), ''..width },
 		MergingChests.item_group_names.wide_chests,
 		width,
 		1,
@@ -157,7 +154,7 @@ end
 local function create_high_chest_entity(entity_data, segment_data, height)
 	return create_entity(
 		entity_data,
-		{ 'chest-name.'..MergingChests.prefix_with_modname('high-'..entity_data.chest_name), height },
+		{ 'chest-name.'..MergingChests.prefix_with_modname('high-'..entity_data.chest_name), ''..height },
 		MergingChests.item_group_names.high_chests,
 		1,
 		height,
@@ -172,7 +169,7 @@ end
 local function create_warehouse_entity(entity_data, segment_data, width, height)
 	return create_entity(
 		entity_data,
-		{ 'chest-name.'..MergingChests.prefix_with_modname(entity_data.chest_name..'-warehouse'), width, height },
+		{ 'chest-name.'..MergingChests.prefix_with_modname(entity_data.chest_name..'-warehouse'), ''..width, ''..height },
 		MergingChests.item_group_names.warehouses,
 		width,
 		height,
@@ -187,7 +184,7 @@ end
 local function create_trashdump_entity(entity_data, segment_data, width, height)
 	return create_entity(
 		entity_data,
-		{ 'chest-name.'..MergingChests.prefix_with_modname(entity_data.chest_name..'-trashdump'), width, height },
+		{ 'chest-name.'..MergingChests.prefix_with_modname(entity_data.chest_name..'-trashdump'), ''..width, ''..height },
 		MergingChests.item_group_names.trashdumps,
 		width,
 		height,
@@ -258,7 +255,7 @@ function MergingChests.create_mergeable_chest(entity_data, segments_data)
 	end
 
 	if enable_chest or enable_warehouse or enable_trashdump then
-		table.insert(data.raw['selection-tool'][MergingChests.merge_selection_tool_name].entity_filters, entity_data.chest_name)
+		table.insert(data.raw['selection-tool'][MergingChests.merge_selection_tool_name].select.entity_filters, entity_data.chest_name)
 		data.raw.item[entity_data.chest_name].stack_size = math.max(data.raw.item[entity_data.chest_name].stack_size, max_area)
 	end
 end

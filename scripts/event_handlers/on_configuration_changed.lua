@@ -8,6 +8,10 @@ local function on_configuration_changed()
             },
             starting_area = "none"
         })
+    else
+        for _, force in pairs(game.forces) do
+            force.set_surface_hidden(surface, true)
+        end
     end
 end
 
@@ -19,6 +23,7 @@ local function on_surface_created(event)
 
         for _, force in pairs(game.forces) do
             force.chart(surface, {{-1, -1}, {1, 1}})
+            force.set_surface_hidden(surface, true)
         end
     end
 end
@@ -27,6 +32,7 @@ local function on_force_created(event)
     local surface = game.get_surface(MergingChests.merge_surface_name)
     if surface then
         event.force.chart(surface, {{-1, -1}, {1, 1}})
+        force.set_surface_hidden(surface, true)
     end
 end
 

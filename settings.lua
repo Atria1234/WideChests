@@ -1,9 +1,9 @@
 require('init')
 require('setting_init')
 
-MergingChests.create_mergeable_chest_setting('wooden-chest', { default_value = 'none', order = '1' })
-MergingChests.create_mergeable_chest_setting('iron-chest', { default_value = 'none', order = '2' })
-MergingChests.create_mergeable_chest_setting('steel-chest', { order = '3' })
+MergingChests.create_mergeable_chest_setting(MergingChests.chest_names.wooden, { default_value = 'none', order = '1' })
+MergingChests.create_mergeable_chest_setting(MergingChests.chest_names.iron, { default_value = 'none', order = '2' })
+MergingChests.create_mergeable_chest_setting(MergingChests.chest_names.steel, { order = '3' })
 
 data:extend(
 {

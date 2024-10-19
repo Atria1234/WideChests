@@ -74,7 +74,7 @@ local function on_player_alt_selected_area(event)
 					merged_chest.destroy({ raise_destroy = true })
 				else
 					player.create_local_flying_text({
-						text = 'flying-text.'..MergingChests.prefix_with_modname('items-would-be-deleted-split'),
+						text = { 'flying-text.'..MergingChests.prefix_with_modname('items-would-be-deleted-split') },
 						position = merged_chest.position
 					})
 				end
