@@ -113,8 +113,8 @@ function MergingChests.reconnect_circuits(from_entities, to_entities)
 		for _, connector in ipairs(from_entity.get_wire_connectors(false)) do
 			for _, connection in ipairs(connector.connections) do
 				if not from_entities_set[connection.target.owner] then
-					outside_connectors[connection.target.wire_connector_id] = outside_connectors[connection.target.wire_connector_id] or {}
-					outside_connectors[connection.target.wire_connector_id][connection.target.owner.unit_number] = connection.target
+					outside_connectors[connector.wire_connector_id] = outside_connectors[connector.wire_connector_id] or {}
+					outside_connectors[connector.wire_connector_id][connection.target.owner.unit_number..'/'..connection.target.wire_connector_id] = connection.target
 				end
 			end
 		end
