@@ -1,4 +1,13 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.0.3
+Date: 31.10.2024
+  Bugfixes:
+    - Changed how inventory bar of ghost entities are read. Replaced surface with blueprint magic.
+    - Removed merged chests entries from Factoriopedia.
+  Translation:
+    - Fixed Russian and Ukrainian translations. Thanks to eugenikus8
+
+---------------------------------------------------------------------------------------------------
 Version: 6.0.2
 Date: 25.10.2024
   Bugfixes:

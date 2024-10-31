@@ -126,6 +126,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			subgroup = subgroup,
 			circuit_connector = connector,
 			circuit_wire_max_distance = default_circuit_wire_max_distance + math.min(width, height) - 1,
+			hidden_in_factoriopedia = true
 		},
 		settings.startup[MergingChests.setting_names.enable_upgrading_merged_chests].value and {
 			fast_replaceable_group = 'merged-container',

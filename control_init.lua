@@ -62,6 +62,40 @@ function MergingChests.move_inventories(from_entities, to_entities)
 end
 
 ---@param entity LuaEntity
+---@param blueprint_entities BlueprintEntity[]
+---@return integer | nil
+local function get_blueprint_entities_bar(entity, blueprint_entities)
+	for _, blueprint_entity in ipairs(blueprint_entities) do
+		if entity.ghost_name == blueprint_entity.name and math.abs(entity.position.x - blueprint_entity.position.x) < 1e-6 and math.abs(entity.position.y - blueprint_entity.position.y) < 1e-6 then
+			game.print('Found bar '..serpent.line(blueprint_entity.bar))
+			return blueprint_entity.bar
+		end
+	end
+	return nil
+end
+
+---@param entity LuaEntity
+---@return integer | nil
+local function get_ghost_bar(entity)
+	local inventory = game.create_inventory(1)
+	inventory.insert({name = "blueprint"})
+	inventory[1].create_blueprint{
+	  surface = entity.surface,
+	  force = entity.force,
+	  area = {
+		{ entity.position.x - 0.01, entity.position.y - 0.01 },
+		{ entity.position.x + 0.01, entity.position.y + 0.01 }
+	  }
+	}
+
+	local blueprint_entities = inventory[1].get_blueprint_entities() or {}
+	local bar = get_blueprint_entities_bar(entity, blueprint_entities)
+
+	inventory.destroy()
+	return bar
+end
+
+---@param entity LuaEntity
 ---@return integer | nil
 local function get_entity_bar(entity)
 	local inventory = entity.get_inventory(defines.inventory.chest)
@@ -79,18 +113,7 @@ function MergingChests.get_total_bar(entities, is_ghost)
 	for _, entity in ipairs(entities) do
 		local bar = (is_ghost and entity.ghost_prototype or entity.prototype).get_inventory_size(defines.inventory.chest) or 0
 		if is_ghost then
-			local clone = entity.clone({ position = {0, 0}, surface = game.surfaces[MergingChests.merge_surface_name] })
-			if clone then
-				local _, revived_entity = clone.silent_revive({ raise_revive = false })
-				if revived_entity then
-					bar = get_entity_bar(revived_entity) or bar
-					revived_entity.destroy({ raise_destroy = false })
-				else
-					error('Can\'t revive ghost for getting its bar')
-				end
-			else
-				error('Can\'t clone ghost for getting its bar')
-			end
+			bar = get_ghost_bar(entity) or bar
 		else
 			bar = get_entity_bar(entity) or bar
 		end
