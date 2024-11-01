@@ -67,7 +67,6 @@ end
 local function get_blueprint_entities_bar(entity, blueprint_entities)
 	for _, blueprint_entity in ipairs(blueprint_entities) do
 		if entity.ghost_name == blueprint_entity.name and math.abs(entity.position.x - blueprint_entity.position.x) < 1e-6 and math.abs(entity.position.y - blueprint_entity.position.y) < 1e-6 then
-			game.print('Found bar '..serpent.line(blueprint_entity.bar))
 			return blueprint_entity.bar
 		end
 	end
