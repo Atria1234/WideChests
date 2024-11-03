@@ -81,6 +81,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			type = 'logistic-container',
 			logistic_mode = base_chest.logistic_mode,
 			animation_sound = base_chest.animation_sound,
+			trash_inventory_size = base_chest.trash_inventory_size,
 			opened_duration = 7,
 			animation = {
 				layers = sprite

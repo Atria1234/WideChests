@@ -1,4 +1,12 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.0.6
+Date: 3.11.2024
+  Bugfixes:
+    - Added missing trash_inventory_size to logistic chests.
+  Translation:
+    - Fixed German translations. Thanks to Kistenverbinder
+
+---------------------------------------------------------------------------------------------------
 Version: 6.0.5
 Date: 1.11.2024
   Bugfixes:
