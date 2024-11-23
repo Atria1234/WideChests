@@ -1,4 +1,11 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.1.0
+Date: 23.11.2024
+  Features:
+    - Chests with quality can now be merged/split. Resulting chest will have lowest quality from chests that are being merged/split.
+    - Added hotkey to create chest merging tool (same as from the shortcut). Is not bound to anything by default.
+
+---------------------------------------------------------------------------------------------------
 Version: 6.0.7
 Date: 9.11.2024
   Bugfixes:

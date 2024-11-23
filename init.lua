@@ -27,7 +27,8 @@ end
 
 MergingChests.custom_input_names = {
 	rotate_blueprint_clockwise = MergingChests.prefix_with_modname('rotate-blueprint-clockwise'),
-	rotate_blueprint_counterclockwise = MergingChests.prefix_with_modname('rotate-blueprint-couterclockwise')
+	rotate_blueprint_counterclockwise = MergingChests.prefix_with_modname('rotate-blueprint-couterclockwise'),
+	merge_tool = MergingChests.prefix_with_modname('merge-tool')
 }
 
 MergingChests.item_group_names = {

@@ -27,7 +27,8 @@ local function create_split_chest(merged_chest, split_chest_name, width, height,
 				position = { x = left_top.x + dX, y = left_top.y + dY },
 				force = player.force,
 				raise_built = true,
-				bar = bar
+				bar = bar,
+				quality = merged_chest.quality
 			}
 
 			if is_ghost then

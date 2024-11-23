@@ -165,13 +165,15 @@ end
 --- @param position MapPosition
 --- @param is_ghost boolean
 --- @param bar integer
+--- @param quality LuaQualityPrototype
 --- @return LuaEntity?
-local function create_merged_chest(player, chest_name, position, is_ghost, bar)
+local function create_merged_chest(player, chest_name, position, is_ghost, bar, quality)
 	local entity_data = {
 		position = position,
 		force = player.force,
 		raise_built = true,
-		bar = bar
+		bar = bar,
+		quality = quality
 	}
 	if is_ghost then
 		entity_data.name = 'entity-ghost'
@@ -192,7 +194,16 @@ local function on_player_selected_area(event)
 				for _, chest_group_to_merge in ipairs(group_chests(entities, entity_name, is_ghost)) do
 					if is_ghost or MergingChests.can_move_inventories(chest_group_to_merge.entities, chest_group_to_merge.merged_chest_name, bounding_box.area(chest_group_to_merge.bounding_box)) then
 						local total_bar = MergingChests.get_total_bar(chest_group_to_merge.entities, is_ghost)
-						local merged_chest = create_merged_chest(player, chest_group_to_merge.merged_chest_name, bounding_box.center(chest_group_to_merge.bounding_box), is_ghost, total_bar)
+						local quality = MergingChests.get_minimum_quality(chest_group_to_merge.entities)
+
+						local merged_chest = create_merged_chest(
+							player,
+							chest_group_to_merge.merged_chest_name,
+							bounding_box.center(chest_group_to_merge.bounding_box),
+							is_ghost,
+							total_bar,
+							quality
+						)
 						if merged_chest then
 							if not is_ghost then
 								merged_chest.last_user = player

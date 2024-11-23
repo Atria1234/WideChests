@@ -25,8 +25,9 @@ function MergingChests.can_move_inventories(from_entities, to_entity_name, to_en
 	for _, from_entity in ipairs(from_entities) do
 		from_item_count = from_item_count + non_blank_inventory_slots_count(from_entity)
 	end
+	local quality = MergingChests.get_minimum_quality(from_entities)
 
-	local to_inventory_size = prototypes.entity[to_entity_name].get_inventory_size(defines.inventory.chest) or 0
+	local to_inventory_size = prototypes.entity[to_entity_name].get_inventory_size(defines.inventory.chest, quality) or 0
 
 	local is_merged_chest, _, _ = MergingChests.get_merged_chest_info(to_entity_name)
 
@@ -110,7 +111,7 @@ end
 function MergingChests.get_total_bar(entities, is_ghost)
 	local bar_count = 0
 	for _, entity in ipairs(entities) do
-		local bar = (is_ghost and entity.ghost_prototype or entity.prototype).get_inventory_size(defines.inventory.chest) or 0
+		local bar = (is_ghost and entity.ghost_prototype or entity.prototype).get_inventory_size(defines.inventory.chest, entity.quality) or 0
 		if is_ghost then
 			bar = get_ghost_bar(entity) or bar
 		else
@@ -120,6 +121,19 @@ function MergingChests.get_total_bar(entities, is_ghost)
 	end
 
 	return bar_count
+end
+
+--- @param entities LuaEntity[]
+--- @return LuaQualityPrototype
+function MergingChests.get_minimum_quality(entities)
+	local min_quality = nil
+	for _, entity in ipairs(entities) do
+		if min_quality == nil or min_quality.level > entity.quality.level then
+			min_quality = entity.quality
+		end
+	end
+
+	return min_quality or prototypes.quality['normal']
 end
 
 --- @param from_entities LuaEntity[]
