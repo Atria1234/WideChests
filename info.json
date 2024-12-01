@@ -1,6 +1,6 @@
 {
 	"name": "WideChests",
-	"version": "6.1.0",
+	"version": "6.1.1",
 	"factorio_version": "2.0",
 	"title": "Merging Chests",
 	"author": "Atria",
@@ -8,6 +8,7 @@
 	"homepage": "https://github.com/Atria1234/WideChests",
 	"description": "Enables merging of multiple chests into one entity. Supports merging of arbitrary number of chests (configurable in mod settings).",
 	"dependencies": [
+		"base >= 2.0.18",
 		"flib >= 0.15.0",
 		"? WideChestsAllTypes",
 		"? WideChestsUnlimited",
