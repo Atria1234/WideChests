@@ -116,6 +116,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			close_sound = base_chest.close_sound,
 			max_health = base_chest.max_health * math.min(width * height, 10),
 			inventory_size = MergingChests.get_inventory_size(base_chest.inventory_size, width * height, entity_data.chest_name),
+			inventory_type = MergingChests.get_mod_settings(entity_data.chest_name).inventory_type,
 			flags = { 'placeable-player', 'player-creation' },
 			minable = { mining_time = 2, result = entity_data.chest_name, count = width * height },
 			placeable_by = { item = entity_data.chest_name, count = width * height },

@@ -52,6 +52,7 @@ MergingChests.setting_names = {
 	mirror_whitelist = MergingChests.prefix_with_modname('mirror-whitelists'),
 	inventory_size_multiplier = MergingChests.prefix_with_modname('inventory-size-multiplier'),
 	inventory_size_limit = MergingChests.prefix_with_modname('inventory-size-limit'),
+	inventory_type = MergingChests.prefix_with_modname('inventory-type'),
 	sprite_decal_chance = MergingChests.prefix_with_modname('sprite-decal-chance'),
 	warehouse_threshold = MergingChests.prefix_with_modname('warehouse-threshold'),
 	circuit_connector_position = MergingChests.prefix_with_modname('circuit-connector-position'),
@@ -82,10 +83,15 @@ local WHITELIST_SIZE_ANY = 'any'
 --- | 'bottom-middle'
 --- | 'bottom-left'
 
+--- @alias inventory_type
+--- | 'normal'
+--- | 'with_bar'
+--- | 'with_filters_and_bar'
+
 --- @alias mod_settings
 --- | { chest_name: string | nil }
 --- | { max_width: number, max_height: number, max_area: number, size_whitelist: size_whitelist }
---- | { inventory_size_multiplier: number, inventory_size_limit: number }
+--- | { inventory_size_multiplier: number, inventory_size_limit: number, inventory_type: inventory_type }
 --- | { warehouse_threshold: number, sprite_variation_chance: number }
 --- | { circuit_connector_position: circuit_connector_position }
 
@@ -141,6 +147,7 @@ local function parse_settings(chest_name)
 		max_area = get_startup_setting_value(MergingChests.setting_names.max_area),
 		inventory_size_multiplier = get_startup_setting_value(MergingChests.setting_names.inventory_size_multiplier),
 		inventory_size_limit = get_startup_setting_value(MergingChests.setting_names.inventory_size_limit),
+		inventory_type = get_startup_setting_value(MergingChests.setting_names.inventory_type),
 		size_whitelist = parse_whitelist_setting(get_startup_setting_value(MergingChests.setting_names.whitelist), get_startup_setting_value(MergingChests.setting_names.mirror_whitelist)),
 		sprite_variation_chance = get_startup_setting_value(MergingChests.setting_names.sprite_decal_chance),
 		warehouse_threshold = get_startup_setting_value(MergingChests.setting_names.warehouse_threshold),
