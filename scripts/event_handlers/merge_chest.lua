@@ -192,7 +192,7 @@ local function on_player_selected_area(event)
 		for entity_name, group in pairs(entity_groups) do
 			for is_ghost, entities in pairs(group) do
 				for _, chest_group_to_merge in ipairs(group_chests(entities, entity_name, is_ghost)) do
-					if is_ghost or MergingChests.can_move_inventories(chest_group_to_merge.entities, chest_group_to_merge.merged_chest_name, bounding_box.area(chest_group_to_merge.bounding_box)) then
+					if is_ghost or player.mod_settings[MergingChests.setting_names.allow_delete_items].value or MergingChests.can_move_inventories(chest_group_to_merge.entities, chest_group_to_merge.merged_chest_name, bounding_box.area(chest_group_to_merge.bounding_box)) then
 						local total_bar = MergingChests.get_total_bar(chest_group_to_merge.entities, is_ghost)
 						local quality = MergingChests.get_minimum_quality(chest_group_to_merge.entities)
 

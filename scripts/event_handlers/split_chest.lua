@@ -53,7 +53,7 @@ local function on_player_alt_selected_area(event)
 			local merged_chest_name = is_ghost and merged_chest.ghost_name or merged_chest.name
 			local split_chest_name, width, height = MergingChests.get_merged_chest_info(merged_chest_name)
 			if split_chest_name ~= nil and width ~= nil and height ~= nil then
-				if is_ghost or MergingChests.can_move_inventories({ merged_chest }, split_chest_name, width * height) or player.mod_settings[MergingChests.setting_names.allow_delete_items].value then
+				if is_ghost or player.mod_settings[MergingChests.setting_names.allow_delete_items].value or MergingChests.can_move_inventories({ merged_chest }, split_chest_name, width * height) then
 					local total_bar = MergingChests.get_total_bar({ merged_chest }, is_ghost)
 					local split_chests = create_split_chest(merged_chest, split_chest_name, width, height, player, is_ghost, total_bar)
 

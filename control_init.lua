@@ -53,6 +53,9 @@ function MergingChests.move_inventories(from_entities, to_entities)
 
 						if to_inventory_index > #to_inventory then
 							to_entity_index = to_entity_index + 1
+							if to_entity_index > table_size(to_entities) then
+								return
+							end
 							to_inventory_index = 1
 						end
 					end

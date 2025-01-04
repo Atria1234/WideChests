@@ -1,4 +1,13 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.2.1
+Date: 4.1.2025
+  Bugfixes:
+    - Fixed crash when merging chest while some items have to be deleted.
+    - Fixed "Allow void items" mod setting not being taken into consideration when merging chests.
+  Translation:
+    - Fixed Russian translations. Thanks to eugenikus8
+
+---------------------------------------------------------------------------------------------------
 Version: 6.2.0
 Date: 1.12.2024
   Features:
