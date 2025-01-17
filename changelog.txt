@@ -1,4 +1,12 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.2.2
+Date: 17.1.2025
+  Features:
+    - Merging chest shortcut shows associated hotkey.
+  Translation:
+    - Fixed German translations. Thanks to ST-DDT
+
+---------------------------------------------------------------------------------------------------
 Version: 6.2.1
 Date: 4.1.2025
   Bugfixes:
