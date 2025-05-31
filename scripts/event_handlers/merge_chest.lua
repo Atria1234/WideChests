@@ -172,7 +172,7 @@ local function create_merged_chest(player, chest_name, position, is_ghost, bar, 
 		position = position,
 		force = player.force,
 		raise_built = true,
-		bar = bar,
+		bar = math.min(bar, 65535),
 		quality = quality
 	}
 	if is_ghost then
