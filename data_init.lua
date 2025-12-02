@@ -80,12 +80,14 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 		type_specific_properties = {
 			type = 'logistic-container',
 			logistic_mode = base_chest.logistic_mode,
-			animation_sound = base_chest.animation_sound,
 			trash_inventory_size = base_chest.trash_inventory_size,
-			opened_duration = 7,
-			animation = {
-				layers = sprite
-			}
+			robot_door = {
+				animation_sound = base_chest.animation_sound,
+				opened_duration = 7,
+				animation = {
+					layers = sprite
+				}
+			},
 		}
 
 		if base_chest.logistic_mode == 'storage' then
@@ -117,6 +119,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			max_health = base_chest.max_health * math.min(width * height, 10),
 			inventory_size = MergingChests.get_inventory_size(base_chest.inventory_size, width * height, entity_data.chest_name),
 			inventory_type = MergingChests.get_mod_settings(entity_data.chest_name).inventory_type,
+			direction_count = 1,
 			flags = { 'placeable-player', 'player-creation' },
 			minable = { mining_time = 2, result = entity_data.chest_name, count = width * height },
 			placeable_by = { item = entity_data.chest_name, count = width * height },
@@ -126,7 +129,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			collision_box = { { -width / 2 + 0.15, -height / 2 + 0.15 }, { width / 2 - 0.15, height / 2 - 0.15 } },
 			selection_box = { { -width / 2, -height / 2 }, { width / 2, height / 2 } },
 			subgroup = subgroup,
-			circuit_connector = connector,
+			circuit_connector = {connector},
 			circuit_wire_max_distance = default_circuit_wire_max_distance + math.min(width, height) - 1,
 			hidden_in_factoriopedia = true,
 			surface_conditions = base_chest.surface_conditions

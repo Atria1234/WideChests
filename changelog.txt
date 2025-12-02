@@ -1,4 +1,12 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.3.0
+Date: 25.06.2026
+  Info:
+    - Updated to Factorio 2.1. Proper use of new features will come later.
+  Bugfixes:
+    - Fixed mode of merge selection tool.
+
+---------------------------------------------------------------------------------------------------
 Version: 6.2.4
 Date: 31.5.2025
   Bugfixes:
