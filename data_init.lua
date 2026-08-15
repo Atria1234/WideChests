@@ -64,16 +64,13 @@ end
 --- @param subgroup string
 --- @param width number
 --- @param height number
---- @param segment_data entity_sprite
-local function create_entity(entity_data, loc_name, subgroup, width, height, segment_data)
+--- @param sprite data.Sprite4Way
+local function create_entity(entity_data, loc_name, subgroup, width, height, sprite)
 	local base_chest = data.raw['logistic-container'][entity_data.chest_name] or data.raw.container[entity_data.chest_name]
 
 	if base_chest == nil then
 		error('Chest with name '..entity_data.chest_name..' not found')
 	end
-
-	local sprite = create_sprite(width, height, segment_data)
-	local connector = get_circuit_connector(entity_data.chest_name, width, height)
 
 	local type_specific_properties
 	if base_chest.logistic_mode then
@@ -81,13 +78,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			type = 'logistic-container',
 			logistic_mode = base_chest.logistic_mode,
 			trash_inventory_size = base_chest.trash_inventory_size,
-			robot_door = {
-				animation_sound = base_chest.animation_sound,
-				opened_duration = 7,
-				animation = {
-					layers = sprite
-				}
-			},
+			picture = sprite,
 		}
 
 		if base_chest.logistic_mode == 'storage' then
@@ -96,9 +87,25 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 	else
 		type_specific_properties = {
 			type = 'container',
-			picture = {
-				layers = sprite
-			}
+			picture = sprite
+		}
+	end
+
+	local direction_count_specific_properties
+	if width == height then
+		direction_count_specific_properties = {
+			direction_count = 1,
+			circuit_connector = {
+				get_circuit_connector(entity_data.chest_name, width, height)
+			},
+		}
+	else
+		direction_count_specific_properties = {
+			direction_count = 2,
+			circuit_connector = {
+				get_circuit_connector(entity_data.chest_name, width, height),
+				get_circuit_connector(entity_data.chest_name, height, width)
+			},
 		}
 	end
 
@@ -108,6 +115,7 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 
 	return util.merge({
 		type_specific_properties,
+		direction_count_specific_properties,
 		{
 			name = merged_chest_name,
 			localised_name = loc_name,
@@ -119,7 +127,6 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			max_health = base_chest.max_health * math.min(width * height, 10),
 			inventory_size = MergingChests.get_inventory_size(base_chest.inventory_size, width * height, entity_data.chest_name),
 			inventory_type = MergingChests.get_mod_settings(entity_data.chest_name).inventory_type,
-			direction_count = 1,
 			flags = { 'placeable-player', 'player-creation' },
 			minable = { mining_time = 2, result = entity_data.chest_name, count = width * height },
 			placeable_by = { item = entity_data.chest_name, count = width * height },
@@ -129,7 +136,6 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 			collision_box = { { -width / 2 + 0.15, -height / 2 + 0.15 }, { width / 2 - 0.15, height / 2 - 0.15 } },
 			selection_box = { { -width / 2, -height / 2 }, { width / 2, height / 2 } },
 			subgroup = subgroup,
-			circuit_connector = {connector},
 			circuit_wire_max_distance = default_circuit_wire_max_distance + math.min(width, height) - 1,
 			hidden_in_factoriopedia = true,
 			surface_conditions = base_chest.surface_conditions
@@ -142,30 +148,28 @@ local function create_entity(entity_data, loc_name, subgroup, width, height, seg
 end
 
 --- @param entity_data entity_data
---- @param segment_data entity_sprite
+--- @param wide_chest_segment_data entity_sprite
+--- @param high_chest_segment_data entity_sprite
 --- @param width number
-local function create_wide_chest_entity(entity_data, segment_data, width)
+local function create_wide_chest_entity(entity_data, wide_chest_segment_data, high_chest_segment_data, width)
+	local sprite = {
+		north = {
+			layers = create_sprite(width, 1, wide_chest_segment_data),
+		},
+		east = {
+			layers = create_sprite(1, width, high_chest_segment_data),
+		},
+		south = util.empty_sprite(),
+		west = util.empty_sprite(),
+	}
+
 	return create_entity(
 		entity_data,
 		{ 'chest-name.'..MergingChests.prefix_with_modname('wide-'..entity_data.chest_name), ''..width },
 		MergingChests.item_group_names.wide_chests,
 		width,
 		1,
-		segment_data
-	)
-end
-
---- @param entity_data entity_data
---- @param segment_data entity_sprite
---- @param height number
-local function create_high_chest_entity(entity_data, segment_data, height)
-	return create_entity(
-		entity_data,
-		{ 'chest-name.'..MergingChests.prefix_with_modname('high-'..entity_data.chest_name), ''..height },
-		MergingChests.item_group_names.high_chests,
-		1,
-		height,
-		segment_data
+		sprite
 	)
 end
 
@@ -174,13 +178,24 @@ end
 --- @param width number
 --- @param height number
 local function create_warehouse_entity(entity_data, segment_data, width, height)
+	local sprite = {
+		north = {
+			layers = create_sprite(width, height, segment_data),
+		},
+		east = {
+			layers = create_sprite(height, width, segment_data),
+		},
+		south = util.empty_sprite(),
+		west = util.empty_sprite(),
+	}
+
 	return create_entity(
 		entity_data,
 		{ 'chest-name.'..MergingChests.prefix_with_modname(entity_data.chest_name..'-warehouse'), ''..width, ''..height },
 		MergingChests.item_group_names.warehouses,
 		width,
 		height,
-		segment_data
+		sprite
 	)
 end
 
@@ -189,13 +204,24 @@ end
 --- @param width number
 --- @param height number
 local function create_trashdump_entity(entity_data, segment_data, width, height)
+	local sprite = {
+		north = {
+			layers = create_sprite(width, height, segment_data),
+		},
+		east = {
+			layers = create_sprite(height, width, segment_data),
+		},
+		south = util.empty_sprite(),
+		west = util.empty_sprite(),
+	}
+
 	return create_entity(
 		entity_data,
 		{ 'chest-name.'..MergingChests.prefix_with_modname(entity_data.chest_name..'-trashdump'), ''..width, ''..height },
 		MergingChests.item_group_names.trashdumps,
 		width,
 		height,
-		segment_data
+		sprite
 	)
 end
 
@@ -231,24 +257,15 @@ function MergingChests.create_mergeable_chest(entity_data, segments_data)
 	local mod_settings = MergingChests.get_mod_settings(entity_data.chest_name)
 	local max_area = 0
 
-	if enable_chest and segments_data.high_segments then
-		for height = 2, math.min(mod_settings.max_height, mod_settings.max_area) do
-			if MergingChests.is_size_allowed(1, height, entity_data.chest_name) then
-				data:extend({ create_high_chest_entity(entity_data, segments_data.high_segments, height) })
-				max_area = math.max(max_area, height)
-			end
-		end
-	end
-
 	for width = 2, math.min(mod_settings.max_width, mod_settings.max_area) do
-		if enable_chest and segments_data.wide_segments then
+		if enable_chest and segments_data.wide_segments and segments_data.high_segments then
 			if MergingChests.is_size_allowed(width, 1, entity_data.chest_name) then
-				data:extend({ create_wide_chest_entity(entity_data, segments_data.wide_segments, width) })
+				data:extend({ create_wide_chest_entity(entity_data, segments_data.wide_segments, segments_data.high_segments, width) })
 				max_area = math.max(max_area, width)
 			end
 		end
 
-		for height = 2, math.min(mod_settings.max_height, mod_settings.max_area) do
+		for height = 2, math.min(mod_settings.max_height, mod_settings.max_area, width) do
 			if MergingChests.is_size_allowed(width, height, entity_data.chest_name) then
 				if enable_trashdump and width > mod_settings.warehouse_threshold and height > mod_settings.warehouse_threshold and segments_data.trashdump_segments then
 					data:extend({ create_trashdump_entity(entity_data, segments_data.trashdump_segments, width, height) })

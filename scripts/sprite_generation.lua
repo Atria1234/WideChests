@@ -39,21 +39,6 @@ require('scripts.math_utils')
 --- | { warehouse_segments?: entity_sprite }
 --- | { trashdump_segments?: entity_sprite }
 
-local function postprocess_sprite(sprite)
-	local lcm = 1
-	for _, layer in ipairs(sprite) do
-		if layer.frame_count then
-			lcm = math.lcm(lcm, layer.frame_count)
-		end
-	end
-
-	if lcm > 1 then
-		for _, layer in ipairs(sprite) do
-			layer.repeat_count = lcm / (layer.frame_count or 1)
-		end
-	end
-end
-
 -- top left corner of sprite will be placed onto center of entity (plus shifts)
 -- random decals may be used
 -- shiftX, shiftY = local segment tile shift
@@ -91,8 +76,8 @@ local function create_sprite_tile(segments, segment, shift_x, shift_y, width, he
 		height = height,
 		shift =
 		{
-			shift_x + (width / 2.0 * (segments.scale or 1) + (segment.shift and segment.shift.x or 0) + segments.shift.x) / 32.0,
-			shift_y + (height / 2.0 * (segments.scale or 1) + (segment.shift and segment.shift.y or 0) + segments.shift.y) / 32.0
+			shift_x + (width / 2.0 * (segment.scale or segments.scale or 1) + (segment.shift and segment.shift.x or 0) + (segments.shift and segments.shift.x or 0)) / 32.0,
+			shift_y + (height / 2.0 * (segment.scale or segments.scale or 1) + (segment.shift and segment.shift.y or 0) + (segments.shift and segments.shift.y or 0)) / 32.0
 		},
 		scale = segment.scale or segments.scale or 1,
 		frame_count = segment.frame_count or 1,
@@ -180,8 +165,6 @@ local function create_sprite(width, height, segments)
 	if segments.shadow then
 		create_entity_sprite(width, height, segments.shadow, sprite_layers)
 	end
-
-	postprocess_sprite(sprite_layers)
 
 	return sprite_layers
 end

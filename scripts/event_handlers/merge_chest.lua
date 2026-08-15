@@ -7,7 +7,7 @@ function bounding_box.area(box)
 end
 
 --- @alias ChestGroup
---- | { entities: LuaEntity[], bounding_box: BoundingBox, merged_chest_name: string }
+--- | { entities: LuaEntity[], direction: defines.direction, bounding_box: BoundingBox, merged_chest_name: string }
 
 --- @param event chest_merged_event
 local function raise_on_chest_merged(event)
@@ -141,6 +141,7 @@ local function group_chests(entities, entity_name, is_ghost)
 			--- @type ChestGroup
 			local group = {
 				entities = { },
+				direction = bounding_box.width(rectangle) >= bounding_box.height(rectangle) and defines.direction.north or defines.direction.east,
 				merged_chest_name = MergingChests.get_merged_chest_name(entity_name, bounding_box.width(rectangle), bounding_box.height(rectangle)),
 				bounding_box = rectangle,
 				is_ghost = is_ghost,
@@ -161,15 +162,15 @@ local function group_chests(entities, entity_name, is_ghost)
 end
 
 --- @param player LuaPlayer
---- @param chest_name string
---- @param position MapPosition
+--- @param chest_group ChestGroup
 --- @param is_ghost boolean
 --- @param bar integer
 --- @param quality LuaQualityPrototype
 --- @return LuaEntity?
-local function create_merged_chest(player, chest_name, position, is_ghost, bar, quality)
+local function create_merged_chest(player, chest_group, is_ghost, bar, quality)
 	local entity_data = {
-		position = position,
+		position = bounding_box.center(chest_group.bounding_box),
+		direction = chest_group.direction,
 		force = player.force,
 		raise_built = true,
 		bar = math.min(bar, 65535),
@@ -177,9 +178,9 @@ local function create_merged_chest(player, chest_name, position, is_ghost, bar, 
 	}
 	if is_ghost then
 		entity_data.name = 'entity-ghost'
-		entity_data.inner_name = chest_name
+		entity_data.inner_name = chest_group.merged_chest_name
 	else
-		entity_data.name = chest_name
+		entity_data.name = chest_group.merged_chest_name
 	end
 	return player.surface.create_entity(entity_data)
 end
@@ -198,8 +199,7 @@ local function on_player_selected_area(event)
 
 						local merged_chest = create_merged_chest(
 							player,
-							chest_group_to_merge.merged_chest_name,
-							bounding_box.center(chest_group_to_merge.bounding_box),
+							chest_group_to_merge,
 							is_ghost,
 							total_bar,
 							quality

@@ -40,13 +40,6 @@ data:extend(
 		order = '05'
 	},
 	{
-		name = MergingChests.setting_names.mirror_whitelist,
-		type = 'bool-setting',
-		setting_type = 'startup',
-		default_value = false,
-		order = '06'
-	},
-	{
 		name = MergingChests.setting_names.inventory_size_multiplier,
 		type = 'double-setting',
 		setting_type = 'startup',
@@ -132,7 +125,6 @@ if MergingChests.is_mod_active(MergingChests.override_size_settings_mod_name) th
 	data.raw['int-setting'][MergingChests.setting_names.max_height].hidden = true
 	data.raw['int-setting'][MergingChests.setting_names.max_area].hidden = true
 	data.raw['string-setting'][MergingChests.setting_names.whitelist].hidden = true
-	data.raw['bool-setting'][MergingChests.setting_names.mirror_whitelist].hidden = true
 
 end
 if MergingChests.is_mod_active(MergingChests.override_inventory_settings_mod_name) then

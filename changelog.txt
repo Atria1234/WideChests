@@ -1,6 +1,19 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 7.0.0
+Date: ??.?.2026
+  Info:
+    - THIS IS BREAKING CHANGE, around half of merged chest prototypes are removed, if your save used them, stay on <7.0.0. Or alternatively you could split all your chests in you save, update mod and then merge then again.
+    - I plan to backport fixes/features added into >7.0.0 to <7.0.0 as well for a while.
+  Major Features:
+    - Used new support for chest direction introduced in Factorio 2.1.
+    - Removed merged chests which have higher height than its width.
+  Ease of use:
+    - It is now possible to rotate blueprints containing merged chests without using my special hotkey.
+    - Removed hotkey to rotate blueprint which contains merged chests.
+
+---------------------------------------------------------------------------------------------------
 Version: 6.3.0
-Date: 25.06.2026
+Date: 25.6.2026
   Info:
     - Updated to Factorio 2.1. Proper use of new features will come later.
   Bugfixes:
