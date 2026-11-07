@@ -32,7 +32,6 @@ MergingChests.custom_input_names = {
 MergingChests.item_group_names = {
 	merged_chests = MergingChests.prefix_with_modname('merged-chests'),
 	wide_chests = MergingChests.prefix_with_modname('wide-chests'),
-	high_chests = MergingChests.prefix_with_modname('high-chests'),
 	warehouses = MergingChests.prefix_with_modname('warehouses'),
 	trashdumps = MergingChests.prefix_with_modname('trashdumps'),
 }
@@ -232,16 +231,16 @@ end
 --- @return string
 function MergingChests.get_merged_chest_name(chest_name, width, height)
     if width > 1 and height > 1 then
+		width, height = math.max(width, height), math.min(width, height)
+
         local mod_settings = MergingChests.get_mod_settings(chest_name)
         if width > mod_settings.warehouse_threshold and height > mod_settings.warehouse_threshold then
             return MergingChests.get_trashdump_name(chest_name, width, height)
         else
             return MergingChests.get_warehouse_name(chest_name, width, height)
         end
-    elseif width > 1 then
-        return MergingChests.get_wide_chest_name(chest_name, width)
     else
-        return MergingChests.get_high_chest_name(chest_name, height)
+        return MergingChests.get_wide_chest_name(chest_name, math.max(width, height))
     end
 end
 
@@ -250,13 +249,6 @@ end
 --- @return string
 function MergingChests.get_wide_chest_name(chest_name, width)
     return MergingChests.prefix_with_modname('wide-'..chest_name..'-'..width)
-end
-
---- @param chest_name string
---- @param height integer
---- @return string
-function MergingChests.get_high_chest_name(chest_name, height)
-    return MergingChests.prefix_with_modname('high-'..chest_name..'-'..height)
 end
 
 --- @param chest_name string

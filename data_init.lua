@@ -174,32 +174,6 @@ local function create_wide_chest_entity(entity_data, wide_chest_segment_data, hi
 end
 
 --- @param entity_data entity_data
---- @param wide_chest_segment_data entity_sprite
---- @param high_chest_segment_data entity_sprite
---- @param height number
-local function create_high_chest_entity(entity_data, wide_chest_segment_data, high_chest_segment_data, height)
-	local sprite = {
-		north = {
-			layers = create_sprite(1, height, high_chest_segment_data),
-		},
-		east = {
-			layers = create_sprite(height, 1, wide_chest_segment_data),
-		},
-		south = util.empty_sprite(),
-		west = util.empty_sprite(),
-	}
-
-	return create_entity(
-		entity_data,
-		{ 'chest-name.'..MergingChests.prefix_with_modname('high-'..entity_data.chest_name), ''..height },
-		MergingChests.item_group_names.high_chests,
-		1,
-		height,
-		sprite
-	)
-end
-
---- @param entity_data entity_data
 --- @param segment_data entity_sprite
 --- @param width number
 --- @param height number
@@ -283,15 +257,6 @@ function MergingChests.create_mergeable_chest(entity_data, segments_data)
 	local mod_settings = MergingChests.get_mod_settings(entity_data.chest_name)
 	local max_area = 0
 
-	if enable_chest and segments_data.high_segments then
-		for height = 2, math.min(mod_settings.max_height, mod_settings.max_area) do
-			if MergingChests.is_size_allowed(1, height, entity_data.chest_name) then
-				data:extend({ create_high_chest_entity(entity_data, segments_data.wide_segments, segments_data.high_segments, height) })
-				max_area = math.max(max_area, height)
-			end
-		end
-	end
-
 	for width = 2, math.min(mod_settings.max_width, mod_settings.max_area) do
 		if enable_chest and segments_data.wide_segments and segments_data.high_segments then
 			if MergingChests.is_size_allowed(width, 1, entity_data.chest_name) then
@@ -300,7 +265,7 @@ function MergingChests.create_mergeable_chest(entity_data, segments_data)
 			end
 		end
 
-		for height = 2, math.min(mod_settings.max_height, mod_settings.max_area) do
+		for height = 2, math.min(mod_settings.max_height, mod_settings.max_area, width) do
 			if MergingChests.is_size_allowed(width, height, entity_data.chest_name) then
 				if enable_trashdump and width > mod_settings.warehouse_threshold and height > mod_settings.warehouse_threshold and segments_data.trashdump_segments then
 					data:extend({ create_trashdump_entity(entity_data, segments_data.trashdump_segments, width, height) })

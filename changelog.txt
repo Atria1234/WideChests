@@ -1,4 +1,13 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 7.0.0
+Date: ??.?.2026
+  Info:
+    - THIS IS BREAKING CHANGE stay on <7.0.0 if some merged chests are removed when you first load your save. Or alternatively you could split all your chests in you save, update mod and then merge then again.
+    - I plan to backport fixes/features added into >7.0.0 to <7.0.0 as well for a while.
+  Major Features:
+    - Removed merged chests which have higher height than its width.
+
+---------------------------------------------------------------------------------------------------
 Version: 6.4.0
 Date: 11.7.2026
   Info:

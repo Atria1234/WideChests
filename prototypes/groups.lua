@@ -15,20 +15,14 @@ data:extend(
 	},
 	{
 		type = 'item-subgroup',
-		name = MergingChests.item_group_names.high_chests,
+		name = MergingChests.item_group_names.warehouses,
 		group = MergingChests.item_group_names.merged_chests,
 		order = 'b',
 	},
 	{
 		type = 'item-subgroup',
-		name = MergingChests.item_group_names.warehouses,
-		group = MergingChests.item_group_names.merged_chests,
-		order = 'c',
-	},
-	{
-		type = 'item-subgroup',
 		name = MergingChests.item_group_names.trashdumps,
 		group = MergingChests.item_group_names.merged_chests,
-		order = 'd',
+		order = 'c',
 	}
 })
