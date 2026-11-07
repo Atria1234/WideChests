@@ -115,25 +115,6 @@ local function find_largest_rectangle(grid, is_size_allowed)
 	return rectangle
 end
 
---- @param chest_name string
---- @param width integer
---- @param height integer
---- @return string
-function get_merged_chest_name(chest_name, width, height)
-    if width > 1 and height > 1 then
-		width, height = math.max(width, height), math.min(width, height)
-
-        local mod_settings = MergingChests.get_mod_settings(chest_name)
-        if width > mod_settings.warehouse_threshold and height > mod_settings.warehouse_threshold then
-            return MergingChests.get_trashdump_name(chest_name, width, height)
-        else
-            return MergingChests.get_warehouse_name(chest_name, width, height)
-        end
-    else
-        return MergingChests.get_wide_chest_name(chest_name, math.max(width, height))
-    end
-end
-
 --- @param entities LuaEntity[]
 --- @param entity_name string
 --- @param is_ghost boolean
@@ -151,7 +132,7 @@ local function group_chests(entities, entity_name, is_ghost)
 		--- @param height integer
 		--- @return boolean
 		local function is_size_allowed(width, height)
-			return prototypes.entity[get_merged_chest_name(entity_name, width, height)] ~= nil
+			return prototypes.entity[MergingChests.get_merged_chest_name(entity_name, width, height)] ~= nil
 		end
 
 		local rectangle = find_largest_rectangle(chest_grid, is_size_allowed)
@@ -161,7 +142,7 @@ local function group_chests(entities, entity_name, is_ghost)
 			local group = {
 				entities = { },
 				direction = bounding_box.width(rectangle) >= bounding_box.height(rectangle) and defines.direction.north or defines.direction.east,
-				merged_chest_name = get_merged_chest_name(entity_name, bounding_box.width(rectangle), bounding_box.height(rectangle)),
+				merged_chest_name = MergingChests.get_merged_chest_name(entity_name, bounding_box.width(rectangle), bounding_box.height(rectangle)),
 				bounding_box = rectangle,
 				is_ghost = is_ghost,
 			}
