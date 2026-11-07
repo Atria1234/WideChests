@@ -7,7 +7,7 @@ function bounding_box.area(box)
 end
 
 --- @alias ChestGroup
---- | { entities: LuaEntity[], bounding_box: BoundingBox, merged_chest_name: string }
+--- | { entities: LuaEntity[], direction: defines.direction, bounding_box: BoundingBox, merged_chest_name: string }
 
 --- @param event chest_merged_event
 local function raise_on_chest_merged(event)
@@ -115,6 +115,25 @@ local function find_largest_rectangle(grid, is_size_allowed)
 	return rectangle
 end
 
+--- @param chest_name string
+--- @param width integer
+--- @param height integer
+--- @return string
+function get_merged_chest_name(chest_name, width, height)
+    if width > 1 and height > 1 then
+		width, height = math.max(width, height), math.min(width, height)
+
+        local mod_settings = MergingChests.get_mod_settings(chest_name)
+        if width > mod_settings.warehouse_threshold and height > mod_settings.warehouse_threshold then
+            return MergingChests.get_trashdump_name(chest_name, width, height)
+        else
+            return MergingChests.get_warehouse_name(chest_name, width, height)
+        end
+    else
+        return MergingChests.get_wide_chest_name(chest_name, math.max(width, height))
+    end
+end
+
 --- @param entities LuaEntity[]
 --- @param entity_name string
 --- @param is_ghost boolean
@@ -132,7 +151,7 @@ local function group_chests(entities, entity_name, is_ghost)
 		--- @param height integer
 		--- @return boolean
 		local function is_size_allowed(width, height)
-			return prototypes.entity[MergingChests.get_merged_chest_name(entity_name, width, height)] ~= nil
+			return prototypes.entity[get_merged_chest_name(entity_name, width, height)] ~= nil
 		end
 
 		local rectangle = find_largest_rectangle(chest_grid, is_size_allowed)
@@ -141,7 +160,8 @@ local function group_chests(entities, entity_name, is_ghost)
 			--- @type ChestGroup
 			local group = {
 				entities = { },
-				merged_chest_name = MergingChests.get_merged_chest_name(entity_name, bounding_box.width(rectangle), bounding_box.height(rectangle)),
+				direction = bounding_box.width(rectangle) >= bounding_box.height(rectangle) and defines.direction.north or defines.direction.east,
+				merged_chest_name = get_merged_chest_name(entity_name, bounding_box.width(rectangle), bounding_box.height(rectangle)),
 				bounding_box = rectangle,
 				is_ghost = is_ghost,
 			}
@@ -161,15 +181,15 @@ local function group_chests(entities, entity_name, is_ghost)
 end
 
 --- @param player LuaPlayer
---- @param chest_name string
---- @param position MapPosition
+--- @param chest_group ChestGroup
 --- @param is_ghost boolean
 --- @param bar integer
 --- @param quality LuaQualityPrototype
 --- @return LuaEntity?
-local function create_merged_chest(player, chest_name, position, is_ghost, bar, quality)
+local function create_merged_chest(player, chest_group, is_ghost, bar, quality)
 	local entity_data = {
-		position = position,
+		position = bounding_box.center(chest_group.bounding_box),
+		direction = chest_group.direction,
 		force = player.force,
 		raise_built = true,
 		bar = math.min(bar, 65535),
@@ -177,9 +197,9 @@ local function create_merged_chest(player, chest_name, position, is_ghost, bar, 
 	}
 	if is_ghost then
 		entity_data.name = 'entity-ghost'
-		entity_data.inner_name = chest_name
+		entity_data.inner_name = chest_group.merged_chest_name
 	else
-		entity_data.name = chest_name
+		entity_data.name = chest_group.merged_chest_name
 	end
 	return player.surface.create_entity(entity_data)
 end
@@ -198,8 +218,7 @@ local function on_player_selected_area(event)
 
 						local merged_chest = create_merged_chest(
 							player,
-							chest_group_to_merge.merged_chest_name,
-							bounding_box.center(chest_group_to_merge.bounding_box),
+							chest_group_to_merge,
 							is_ghost,
 							total_bar,
 							quality

@@ -1,6 +1,17 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.4.0
+Date: 11.7.2026
+  Info:
+    - Hatch on logistic chests not opening is a known issue and reported to Factorio devs.
+  Major Features:
+    - Used new support for chest direction introduced in Factorio 2.1.
+  Ease of use:
+    - It is now possible to rotate blueprints containing merged chests without using my special hotkey.
+    - Removed hotkey to rotate blueprint which contains merged chests.
+
+---------------------------------------------------------------------------------------------------
 Version: 6.3.0
-Date: 25.06.2026
+Date: 25.6.2026
   Info:
     - Updated to Factorio 2.1. Proper use of new features will come later.
   Bugfixes:

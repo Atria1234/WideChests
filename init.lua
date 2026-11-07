@@ -26,8 +26,6 @@ function MergingChests.chest_specific_setting_name(setting_name, chest_name)
 end
 
 MergingChests.custom_input_names = {
-	rotate_blueprint_clockwise = MergingChests.prefix_with_modname('rotate-blueprint-clockwise'),
-	rotate_blueprint_counterclockwise = MergingChests.prefix_with_modname('rotate-blueprint-couterclockwise'),
 	merge_tool = MergingChests.prefix_with_modname('merge-tool')
 }
 
@@ -49,7 +47,6 @@ MergingChests.setting_names = {
 	max_height = MergingChests.prefix_with_modname('max-chest-height'),
 	max_area = MergingChests.prefix_with_modname('max-chest-area'),
 	whitelist = MergingChests.prefix_with_modname('whitelist-chest-sizes'),
-	mirror_whitelist = MergingChests.prefix_with_modname('mirror-whitelists'),
 	inventory_size_multiplier = MergingChests.prefix_with_modname('inventory-size-multiplier'),
 	inventory_size_limit = MergingChests.prefix_with_modname('inventory-size-limit'),
 	inventory_type = MergingChests.prefix_with_modname('inventory-type'),
@@ -96,9 +93,8 @@ local WHITELIST_SIZE_ANY = 'any'
 --- | { circuit_connector_position: circuit_connector_position }
 
 --- @param value string
---- @param mirror boolean
 --- @return size_whitelist
-local function parse_whitelist_setting(value, mirror)
+local function parse_whitelist_setting(value)
 	local size_whitelist = { }
 	local has_item = false
 	for width, height in string.gmatch(value, '([%dN]+)[×xX$*]([%dN]+)') do
@@ -109,7 +105,7 @@ local function parse_whitelist_setting(value, mirror)
 				size_whitelist[width] = { }
 				has_item = true
 			end
-			if mirror and not size_whitelist[height] then
+			if not size_whitelist[height] then
 				size_whitelist[height] = { }
 				has_item = true
 			end
@@ -117,7 +113,7 @@ local function parse_whitelist_setting(value, mirror)
 			if not size_whitelist[width][WHITELIST_SIZE_ANY] then
 				size_whitelist[width][height] = true
 			end
-			if mirror and not size_whitelist[height][WHITELIST_SIZE_ANY] then
+			if not size_whitelist[height][WHITELIST_SIZE_ANY] then
 				size_whitelist[height][width] = true
 			end
 		end
@@ -148,7 +144,7 @@ local function parse_settings(chest_name)
 		inventory_size_multiplier = get_startup_setting_value(MergingChests.setting_names.inventory_size_multiplier),
 		inventory_size_limit = get_startup_setting_value(MergingChests.setting_names.inventory_size_limit),
 		inventory_type = get_startup_setting_value(MergingChests.setting_names.inventory_type),
-		size_whitelist = parse_whitelist_setting(get_startup_setting_value(MergingChests.setting_names.whitelist), get_startup_setting_value(MergingChests.setting_names.mirror_whitelist)),
+		size_whitelist = parse_whitelist_setting(get_startup_setting_value(MergingChests.setting_names.whitelist)),
 		sprite_variation_chance = get_startup_setting_value(MergingChests.setting_names.sprite_decal_chance),
 		warehouse_threshold = get_startup_setting_value(MergingChests.setting_names.warehouse_threshold),
 		circuit_connector_position = get_startup_setting_value(MergingChests.setting_names.circuit_connector_position),
