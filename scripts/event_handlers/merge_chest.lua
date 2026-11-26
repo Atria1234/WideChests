@@ -193,7 +193,8 @@ local function create_merged_chest(player, chest_group, is_ghost, bar, quality)
 		force = player.force,
 		raise_built = true,
 		bar = math.min(bar, 65535),
-		quality = quality
+		quality = quality,
+		control_behavior = MergingChests.create_control_behavior(chest_group.entities)
 	}
 	if is_ghost then
 		entity_data.name = 'entity-ghost'

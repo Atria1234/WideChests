@@ -1,4 +1,11 @@
 ﻿---------------------------------------------------------------------------------------------------
+Version: 6.4.1
+Date: 26.11.2026
+  Bugfixes:
+    - Splitting chests now copies the circuit network config to all chests.
+    - Merging chests does the same if all merged chests have exactly the same config (otherwise default config is used).
+
+---------------------------------------------------------------------------------------------------
 Version: 6.4.0
 Date: 11.7.2026
   Info:

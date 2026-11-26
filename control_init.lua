@@ -1,3 +1,5 @@
+local flib_table = require('__flib__/table')
+
 --- @alias chest_merged_event { player_index: number, surface: LuaSurface, split_chests: LuaEntity[], merged_chest: LuaEntity }
 
 --- @param entity LuaEntity
@@ -137,6 +139,43 @@ function MergingChests.get_minimum_quality(entities)
 	end
 
 	return min_quality or prototypes.quality['normal']
+end
+
+--- @param entity LuaEntity
+--- @return ContainerBlueprintControlBehavior | LogisticContainerBlueprintControlBehavior
+local function get_control_behavior_blueprint(entity)
+	--- @type LuaContainerControlBehavior | LuaLogisticContainerControlBehavior
+	control_behavior = entity.get_or_create_control_behavior()
+
+	local control_behavior_blueprint = {
+		output_networks = control_behavior.output_networks,
+		read_contents = control_behavior.read_contents,
+		read_empty_slots = control_behavior.read_empty_slots,
+		empty_slots_signal = control_behavior.empty_slots_signal
+	}
+	if entity.type == 'logistic-container' then
+		control_behavior_blueprint.input_networks = control_behavior.input_networks
+		control_behavior_blueprint.set_requests = control_behavior.set_requests
+		control_behavior_blueprint.circuit_condition_enabled = control_behavior.circuit_condition_enabled
+		control_behavior_blueprint.circuit_condition = control_behavior.circuit_condition
+	end
+
+	return control_behavior_blueprint
+end
+
+--- @param entities LuaEntity[]
+--- @return ContainerBlueprintControlBehavior | LogisticContainerBlueprintControlBehavior | nil
+function MergingChests.create_control_behavior(entities)
+	local control_behavior_blueprint
+	for _, entity in pairs(entities) do
+		if control_behavior_blueprint == nil then
+			control_behavior_blueprint = get_control_behavior_blueprint(entity)
+		elseif not flib_table.deep_compare(control_behavior_blueprint, get_control_behavior_blueprint(entity)) then
+			return nil
+		end
+	end
+
+	return control_behavior_blueprint
 end
 
 --- @param from_entities LuaEntity[]
